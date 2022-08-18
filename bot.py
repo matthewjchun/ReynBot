@@ -68,6 +68,14 @@ async def voice(ctx):
         await ctx.send("Man, wha' a buncha jokas!")
 
 
+# @bot.command(name='jokas', pass_context=True)
+# async def jokas(ctx):
+#     if ctx.author.voice:
+#         channel = ctx.message.author.voice.channel
+#         voice = await channel.connect()
+#         source =
+
+
 @bot.command(name='leave', pass_context=True)
 async def leave(ctx):
     if ctx.voice_client:
