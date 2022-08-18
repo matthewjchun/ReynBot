@@ -3,6 +3,7 @@ import random
 import discord
 
 from dotenv import load_dotenv
+from discord import FFmpegPCMAudio
 from discord.ext import commands
 
 load_dotenv()
@@ -68,12 +69,15 @@ async def voice(ctx):
         await ctx.send("Man, wha' a buncha jokas!")
 
 
-# @bot.command(name='jokas', pass_context=True)
-# async def jokas(ctx):
-#     if ctx.author.voice:
-#         channel = ctx.message.author.voice.channel
-#         voice = await channel.connect()
-#         source =
+@bot.command(name='jokas', pass_context=True)
+async def jokas(ctx):
+    if ctx.author.voice:
+        channel = ctx.message.author.voice.channel
+        clip = await channel.connect()
+        source = FFmpegPCMAudio('JOHKAS.mp3')
+        player = clip.play(source)
+    else:
+        await ctx.send("not in a vc :(")
 
 
 @bot.command(name='leave', pass_context=True)
