@@ -1,3 +1,4 @@
+import asyncio
 import os
 import random
 import discord
@@ -75,9 +76,13 @@ async def jokas(ctx):
         channel = ctx.message.author.voice.channel
         clip = await channel.connect()
         source = FFmpegPCMAudio('JOHKAS.mp3')
-        player = clip.play(source)
+        clip.play(source)
+        # if clip.is_playing is False:
+        #     await ctx.guild.voice_client.disconnect()
     else:
         await ctx.send("not in a vc :(")
+
+
 
 
 @bot.command(name='leave', pass_context=True)
