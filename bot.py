@@ -1,8 +1,10 @@
+import asyncio
 import os
 import random
 import discord
 
 from dotenv import load_dotenv
+from discord import FFmpegPCMAudio
 from discord.ext import commands
 
 load_dotenv()
@@ -11,7 +13,8 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 intents = discord.Intents.default()
 intents.members = True
 
-bot = commands.Bot(command_prefix='R!', intents=intents)
+bot = commands.Bot(command_prefix='.', intents=intents)
+
 
 # -------------------- EVENTS --------------------
 
@@ -28,6 +31,7 @@ async def on_member_join(member):
     await member.dm_channel.send(
         f'Reyn time, {member.name}'
     )
+
 
 # -------------------- COMMANDS --------------------
 
@@ -61,10 +65,32 @@ async def talk(ctx):
 async def voice(ctx):
     if ctx.author.voice:
         channel = ctx.message.author.voice.channel
-        print(channel)
         await channel.connect()
     else:
         await ctx.send("Man, wha' a buncha jokas!")
 
+
+@bot.command(name='jokas', pass_context=True)
+async def jokas(ctx):
+    if ctx.author.voice:
+        channel = ctx.message.author.voice.channel
+        clip = await channel.connect()
+        source = FFmpegPCMAudio('JOHKAS.mp3')
+        clip.play(source)
+        # if clip.is_playing is False:
+        #     await ctx.guild.voice_client.disconnect()
+    else:
+        await ctx.send("not in a vc :(")
+
+
+
+
+@bot.command(name='leave', pass_context=True)
+async def leave(ctx):
+    if ctx.voice_client:
+        await ctx.guild.voice_client.disconnect()
+        await ctx.send("Ugh... Let's split!")
+    else:
+        await ctx.send("Lets not lose our heads though!")
 
 bot.run(TOKEN)
