@@ -1,14 +1,15 @@
 import asyncio
+import discord
 
 from discord import FFmpegPCMAudio
 from discord.ext import commands
 
 
 class VoiceCog(commands.Cog):
-    def __int__(self, bot):
+    def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name='quote', pass_context=True)
+    @commands.command(name='quote')
     async def quote(self, ctx):
         if ctx.author.voice:
             channel = ctx.message.author.voice.channel
@@ -16,7 +17,7 @@ class VoiceCog(commands.Cog):
         else:
             await ctx.send("Man, wha' a buncha jokas!")
 
-    @commands.command(name='jokas', pass_context=True)
+    @commands.command(name='jokas')
     async def jokas(self, ctx):
         if ctx.author.voice:
             channel = ctx.message.author.voice.channel
@@ -26,7 +27,7 @@ class VoiceCog(commands.Cog):
         else:
             await ctx.send("Man, wha' a buncha jokas!")
 
-    @commands.command(name='leave', pass_context=True)
+    @commands.command(name='leave')
     async def leave(self, ctx):
         if ctx.voice_client:
             await ctx.guild.voice_client.disconnect()
@@ -53,5 +54,9 @@ class VoiceCog(commands.Cog):
                     break
 
 
-async def setup(bot):
-    await bot.add_cog(VoiceCog(bot))
+def setup(bot):
+    bot.add_cog(VoiceCog(bot))
+
+# 2.0 code
+# async def setup(bot):
+#     await bot.add_cog(VoiceCog(bot))

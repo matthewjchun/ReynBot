@@ -1,4 +1,5 @@
 import random
+import discord
 
 from discord.ext import commands
 
@@ -32,5 +33,9 @@ class TextCog(commands.Cog):
         await ctx.send(response)
 
 
-async def setup(bot):
-    await bot.add_cog(TextCog(bot))
+def setup(bot):
+    bot.add_cog(TextCog(bot))
+
+# 2.0 code
+# async def setup(bot):
+#     await bot.add_cog(TextCog(bot))

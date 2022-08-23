@@ -19,17 +19,21 @@ initial_extensions = ['cogs.text',
 
 bot = commands.Bot(command_prefix='.', intents=intents)
 
+# discord.py 2.0 code
+# async def load_extensions():
+#     for extension in initial_extensions:
+#         await bot.load_extension(extension)
+# async def main():
+#     async with bot:
+#         await load_extensions()
+#         await bot.start(TOKEN)
 
-async def load_extensions():
+
+if __name__ == '__main__':
     for extension in initial_extensions:
-        await bot.load_extension(extension)
+        bot.load_extension(extension)
 
-
-async def main():
-    async with bot:
-        await load_extensions()
-        await bot.start(TOKEN)
-
+print(bot.extensions)
 
 # -------------------- EVENTS --------------------
 
@@ -47,5 +51,7 @@ async def on_member_join(member):
         f'Reyn time, {member.name}'
     )
 
+# discord.py 2.0 code
+# asyncio.run(main())
 
-asyncio.run(main())
+bot.run(TOKEN)
