@@ -1,5 +1,7 @@
 import asyncio
 import discord
+import random
+import os
 
 from discord import FFmpegPCMAudio
 from discord.ext import commands
@@ -8,24 +10,29 @@ from discord.ext import commands
 class VoiceCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.cluster = self.bot.get_cluster()
+        self.clips = self.bot.get_clips()
 
     @commands.command(name='quote')
     async def quote(self, ctx):
         if ctx.author.voice:
             channel = ctx.message.author.voice.channel
-            await channel.connect()
+            connection = await channel.connect()
+            clip = os.path.basename(random.choice(os.listdir("./clips")))
+            source = FFmpegPCMAudio("./clips/" + clip)
+            connection.play(source)
         else:
-            await ctx.send("Man, wha' a buncha jokas!")
+            await ctx.send("Man, wha' a buncha jokas! You've gotta be in a voice channel!")
 
     @commands.command(name='jokas')
     async def jokas(self, ctx):
         if ctx.author.voice:
             channel = ctx.message.author.voice.channel
-            clip = await channel.connect()
-            source = FFmpegPCMAudio('JOHKAS.mp3')
-            clip.play(source)
+            connection = await channel.connect()
+            source = FFmpegPCMAudio('./clips/JOHKAS.mp3')
+            connection.play(source)
         else:
-            await ctx.send("Man, wha' a buncha jokas!")
+            await ctx.send("You've gotta be in a voice channel!")
 
     @commands.command(name='leave')
     async def leave(self, ctx):
@@ -56,4 +63,3 @@ class VoiceCog(commands.Cog):
 
 def setup(bot):
     bot.add_cog(VoiceCog(bot))
-

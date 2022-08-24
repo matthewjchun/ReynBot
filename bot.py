@@ -2,10 +2,14 @@ import asyncio
 import os
 import random
 import discord
+import reyn
 
 from dotenv import load_dotenv
 from discord import FFmpegPCMAudio
 from discord.ext import commands
+
+
+# -------------------- BOT SETUP --------------------
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -17,7 +21,7 @@ initial_extensions = ['cogs.text',
                       'cogs.voice']
 
 
-bot = commands.Bot(command_prefix='.', intents=intents)
+bot = reyn.Reyn(command_prefix='.', intents=intents)
 
 if __name__ == '__main__':
     for extension in initial_extensions:
