@@ -25,7 +25,7 @@ class Reyn(commands.Bot):
 
         # ----- CUSTOM PARAMETERS -----
         self.cluster = MongoClient(CONNECTION_URL)
-        self.clips = Path("./clips/")
+        self.clips = Path("../clips/")
 
     def get_cluster(self):
         return self.cluster

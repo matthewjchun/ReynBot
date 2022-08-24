@@ -1,13 +1,8 @@
-import asyncio
 import os
-import random
 import discord
-import reyn
+from src import reyn
 
 from dotenv import load_dotenv
-from discord import FFmpegPCMAudio
-from discord.ext import commands
-
 
 # -------------------- BOT SETUP --------------------
 
