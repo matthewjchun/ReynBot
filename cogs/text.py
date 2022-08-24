@@ -7,6 +7,8 @@ from discord.ext import commands
 class TextCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.db = self.bot.get_cluster()["UserData"]
+        self.collection = self.db["UserData"]
 
     @commands.command(name='talk')
     @commands.guild_only()
@@ -32,7 +34,12 @@ class TextCog(commands.Cog):
         response = random.choice(reyn_quotes)
         await ctx.send(response)
 
+    @commands.command()
+    async def lvl(self, ctx):
+        post = {"_id": ctx.author.id, "name": ctx.author.name, "score": 1}
+        self.collection.insert_one(post)
+        await ctx.channel.send('accepted!')
+
 
 def setup(bot):
     bot.add_cog(TextCog(bot))
-
