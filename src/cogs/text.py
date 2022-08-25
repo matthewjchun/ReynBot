@@ -35,6 +35,10 @@ class TextCog(commands.Cog):
         await ctx.send(response)
 
     @commands.command()
+    async def reyn_time(self, ctx):
+        await ctx.channel.send('imagine this is a picture')
+
+    @commands.command()
     async def lvl(self, ctx):
         post = {"_id": ctx.author.id, "name": ctx.author.name, "score": 1}
         self.collection.insert_one(post)
