@@ -16,9 +16,25 @@ class VoiceCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.cluster = self.bot.get_cluster()
+        self.db = self.cluster["UserData"]
+        self.collection = self.db["UserData"]
         self.clips = self.bot.get_clips()
 
+    async def lvl(self, ctx):
+        id_query = {"_id": ctx.author.id}
+        if self.collection.count_documents(id_query) == 0:
+            post = {"_id": ctx.author.id, "name": ctx.author.name, "score": 1}
+            self.collection.insert_one(post)
+        else:
+            user = self.collection.find(id_query)
+            for result in user:
+                score = result["score"]
+            score = score + 1
+            self.collection.update_one({"_id": ctx.author.id}, {"$set": {"score": score}})
+        print(f"user {ctx.author.name}'s score has been updated.")
+
     @commands.command(name='quote')
+    @commands.after_invoke(lvl)
     async def quote(self, ctx, number_of_quotes: int = 1):
         if ctx.author.voice:
             if not is_connected(ctx):
@@ -35,6 +51,7 @@ class VoiceCog(commands.Cog):
             await ctx.send("Man, wha' a buncha jokas! You've gotta be in a voice channel!")
 
     @commands.command(name='jokas')
+    @commands.after_invoke(lvl)
     async def jokas(self, ctx, number_of_quotes: int = 1):
         if ctx.author.voice:
             if not is_connected(ctx):
@@ -50,6 +67,7 @@ class VoiceCog(commands.Cog):
             await ctx.send("You've gotta be in a voice channel!")
 
     @commands.command(name='leave')
+    @commands.after_invoke(lvl)
     async def leave(self, ctx):
         if ctx.voice_client:
             await ctx.guild.voice_client.disconnect()

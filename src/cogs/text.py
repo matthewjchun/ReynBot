@@ -1,3 +1,4 @@
+import json
 import random
 import discord
 
@@ -10,8 +11,21 @@ class TextCog(commands.Cog):
         self.db = self.bot.get_cluster()["UserData"]
         self.collection = self.db["UserData"]
 
-    @commands.command(name='talk')
-    @commands.guild_only()
+    async def lvl(self, ctx):
+        id_query = {"_id": ctx.author.id}
+        if self.collection.count_documents(id_query) == 0:
+            post = {"_id": ctx.author.id, "name": ctx.author.name, "score": 1}
+            self.collection.insert_one(post)
+        else:
+            user = self.collection.find(id_query)
+            for result in user:
+                score = result["score"]
+            score = score + 1
+            self.collection.update_one({"_id": ctx.author.id}, {"$set": {"score": score}})
+        print(f"user {ctx.author.name}'s score has been updated.")
+
+    @commands.command()
+    @commands.after_invoke(lvl)
     async def talk(self, ctx):
         reyn_quotes = [
             "Now it\'s Reyn time!",
@@ -35,14 +49,9 @@ class TextCog(commands.Cog):
         await ctx.send(response)
 
     @commands.command()
+    @commands.after_invoke(lvl)
     async def reyn_time(self, ctx):
         await ctx.channel.send('imagine this is a picture')
-
-    @commands.command()
-    async def lvl(self, ctx):
-        post = {"_id": ctx.author.id, "name": ctx.author.name, "score": 1}
-        self.collection.insert_one(post)
-        await ctx.channel.send('accepted!')
 
 
 def setup(bot):
