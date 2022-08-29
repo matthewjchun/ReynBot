@@ -22,15 +22,27 @@ class VoiceCog(commands.Cog):
 
     async def lvl(self, ctx):
         id_query = {"_id": ctx.author.id}
+
+        # creates or updates user score in database
         if self.collection.count_documents(id_query) == 0:
-            post = {"_id": ctx.author.id, "name": ctx.author.name, "score": 1}
+            post = {"_id": ctx.author.id, "name": ctx.author.name, "score": 1, "level": 1}
             self.collection.insert_one(post)
         else:
             user = self.collection.find(id_query)
             for result in user:
                 score = result["score"]
+                level = result["level"]
             score = score + 1
-            self.collection.update_one({"_id": ctx.author.id}, {"$set": {"score": score}})
+            if score == 10:
+                level = 2
+                await ctx.channel.send(f"You're powering up! @everyone {ctx.author.name} is now level 2!")
+            if score == 50:
+                level = 3
+                await ctx.channel.send(f"You're powering up! @everyone {ctx.author.name} is now level 3!")
+            if score == 100:
+                level = 4
+                await ctx.channel.send(f"You're powering up! @everyone {ctx.author.name} is now level 4!")
+            self.collection.update_one({"_id": ctx.author.id}, {"$set": {"score": score, "level": level}})
         print(f"user {ctx.author.name}'s score has been updated.")
 
     @commands.command(name='quote')
