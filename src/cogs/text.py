@@ -1,3 +1,4 @@
+import json
 import random
 import discord
 
@@ -10,8 +11,31 @@ class TextCog(commands.Cog):
         self.db = self.bot.get_cluster()["UserData"]
         self.collection = self.db["UserData"]
 
-    @commands.command(name='talk')
-    @commands.guild_only()
+    async def lvl(self, ctx):
+        id_query = {"_id": ctx.author.id}
+        if self.collection.count_documents(id_query) == 0:
+            post = {"_id": ctx.author.id, "name": ctx.author.name, "score": 1, "level": 1}
+            self.collection.insert_one(post)
+        else:
+            user = self.collection.find(id_query)
+            for result in user:
+                score = result["score"]
+                level = result["level"]
+            score = score + 1
+            if score == 10:
+                level = 2
+                await ctx.channel.send(f"You're powering up! @everyone {ctx.author.name} is now level 2!")
+            if score == 50:
+                level = 3
+                await ctx.channel.send(f"You're powering up! @everyone {ctx.author.name} is now level 3!")
+            if score == 100:
+                level = 4
+                await ctx.channel.send(f"You're powering up! @everyone {ctx.author.name} is now level 4!")
+            self.collection.update_one({"_id": ctx.author.id}, {"$set": {"score": score, "level": level}})
+        print(f"user {ctx.author.name}'s score has been updated.")
+
+    @commands.command()
+    @commands.after_invoke(lvl)
     async def talk(self, ctx):
         reyn_quotes = [
             "Now it\'s Reyn time!",
@@ -34,11 +58,10 @@ class TextCog(commands.Cog):
         response = random.choice(reyn_quotes)
         await ctx.send(response)
 
-    @commands.command()
-    async def lvl(self, ctx):
-        post = {"_id": ctx.author.id, "name": ctx.author.name, "score": 1}
-        self.collection.insert_one(post)
-        await ctx.channel.send('accepted!')
+    # @commands.command()
+    # @commands.after_invoke(lvl)
+    # async def reyn_time(self, ctx):
+    #     await ctx.channel.send('imagine this is a picture')
 
 
 def setup(bot):
