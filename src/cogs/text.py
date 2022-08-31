@@ -58,10 +58,10 @@ class TextCog(commands.Cog):
         response = random.choice(reyn_quotes)
         await ctx.send(response)
 
-    @commands.command()
-    @commands.after_invoke(lvl)
-    async def reyn_time(self, ctx):
-        await ctx.channel.send('imagine this is a picture')
+    # @commands.command()
+    # @commands.after_invoke(lvl)
+    # async def reyn_time(self, ctx):
+    #     await ctx.channel.send('imagine this is a picture')
 
 
 def setup(bot):
